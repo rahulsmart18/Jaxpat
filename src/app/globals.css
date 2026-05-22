@@ -1,21 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --porto-accent: 94 234 212;
+  --porto-line: 30 30 32;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Fixed header + notch: in-page anchors land below the bar */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: max(
+    5.75rem,
+    calc(env(safe-area-inset-top, 0px) + 5.25rem)
+  );
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.35;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+/* Match Framer paragraph preset (Inter Display 18 / 22) */
+.porto-body {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+.porto-muted {
+  color: rgb(148, 148, 152);
+}
+
+@media (max-width: 640px) {
+  .porto-body {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+}
+
+/* Keyboard / switch navigation */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid rgb(var(--porto-accent) / 0.75);
+  outline-offset: 3px;
+}
+
+/*
+ * Custom dot cursor: hide the OS pointer while active.
+ * Scope to `body` subtree (not `head`) so devtools / meta tags stay normal.
+ */
+@media (pointer: fine) {
+  html.framer-cursor-active {
+    cursor: none !important;
+  }
+
+  html.framer-cursor-active body,
+  html.framer-cursor-active body * {
+    cursor: none !important;
+  }
+}
+
+::selection {
+  background: rgb(var(--porto-accent) / 0.22);
+  color: #fff;
+}
+
+@keyframes porto-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .porto-marquee-track {
+    animation: none !important;
+  }
 }

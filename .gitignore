@@ -20,6 +20,10 @@
 # production
 /build
 
+# Reference dump from curl (large)
+scripts/framer-home.html
+scripts/extract-out.txt
+
 # misc
 .DS_Store
 *.pem
