@@ -32,7 +32,7 @@ export function MarqueeStrip({
 
   const strip = (
     <div className="flex shrink-0 items-center pr-20">
-      <span className="whitespace-nowrap font-display text-[clamp(2.25rem,7vw,4.5rem)] font-semibold uppercase tracking-[-0.04em] text-white/[0.82]">
+      <span className="porto-marquee-text whitespace-nowrap font-display text-[clamp(1.5rem,5.5vw,4.5rem)] font-semibold uppercase tracking-[-0.04em] text-white/[0.82] sm:text-[clamp(2.25rem,7vw,4.5rem)]">
         {text}
       </span>
     </div>

@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { portfolioItems } from "@/lib/data";
+import { HoverWords } from "@/components/motion/HoverWords";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import { Reveal } from "@/components/motion/Reveal";
+import { StaggerItem, StaggerReveal } from "@/components/motion/StaggerReveal";
+import { TiltCard } from "@/components/motion/TiltCard";
 import { SectionLabel } from "@/components/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
@@ -56,7 +60,11 @@ export function Portfolio() {
   const scrollByCards = useCallback((direction: "prev" | "next") => {
     const el = scrollerRef.current;
     if (!el) return;
-    const amount = Math.max(280, Math.floor(el.clientWidth * 0.78));
+    const narrow =
+      typeof window !== "undefined" && window.innerWidth < MD_MIN;
+    const step = narrow ? 0.72 : 0.78;
+    const minStep = narrow ? 220 : 280;
+    const amount = Math.max(minStep, Math.floor(el.clientWidth * step));
     el.scrollBy({
       left: direction === "next" ? amount : -amount,
       behavior: "smooth",
@@ -97,7 +105,7 @@ export function Portfolio() {
   return (
     <section
       id="portfolio"
-      className="border-t border-portoLine px-4 py-20 sm:px-6 md:px-8 md:py-32"
+      className="border-t border-portoLine porto-safe-x py-20 md:py-32"
     >
       <div className="mx-auto max-w-[1400px]">
         <Reveal>
@@ -106,11 +114,11 @@ export function Portfolio() {
         <div className="mt-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal delay={0.05}>
             <div>
-              <h2 className="font-display text-porto-display-sm font-semibold uppercase text-[rgb(128,128,128)]">
-                Latest
+              <h2 className="font-display text-porto-display-sm font-semibold uppercase text-brand-secondary">
+                <HoverWords as="span" byChar={false} text="Latest" />
               </h2>
               <h2 className="mt-2 font-display text-porto-display font-semibold uppercase text-white porto-lg:mt-1">
-                Portfolio
+                <HoverWords as="span" byChar={false} text="Portfolio" />
               </h2>
             </div>
           </Reveal>
@@ -122,45 +130,51 @@ export function Portfolio() {
                 how we scope, build, and ship with your team.
               </p>
               <div className="flex items-center gap-2.5">
-                <button
+                <MagneticButton
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => scrollByCards("prev")}
                   disabled={!canScrollPrev}
                   aria-label="Scroll portfolio left"
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 text-white transition hover:border-portoAccent/45 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-35"
                 >
                   <span aria-hidden className="text-xl leading-none">
                     ←
                   </span>
-                </button>
-                <button
+                </MagneticButton>
+                <MagneticButton
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => scrollByCards("next")}
                   disabled={!canScrollNext}
                   aria-label="Scroll portfolio right"
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 text-white transition hover:border-portoAccent/45 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-35"
                 >
                   <span aria-hidden className="text-xl leading-none">
                     →
                   </span>
-                </button>
+                </MagneticButton>
               </div>
             </div>
           </Reveal>
         </div>
 
-        <Reveal delay={0.05} className="mt-14">
+        <StaggerReveal className="mt-14">
           <div
             ref={scrollerRef}
             onMouseDown={onScrollerMouseDown}
-            className={`flex touch-pan-x gap-5 overflow-x-auto overscroll-x-contain pb-4 pl-0 pr-6 [-ms-overflow-style:none] [scrollbar-width:none] sm:pr-10 md:pr-12 [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-pl-4 scroll-pr-6 sm:scroll-pr-10 md:scroll-pr-12 ${isDragging ? "cursor-grabbing select-none" : "md:cursor-grab"}`}
+            className={`flex touch-pan-x gap-4 overflow-x-auto overscroll-x-contain pb-4 ps-0 pe-[max(1.25rem,env(safe-area-inset-right,0px))] [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-5 sm:pe-10 md:pe-12 [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-ps-4 scroll-pe-[max(1.25rem,env(safe-area-inset-right,0px))] sm:scroll-pe-10 md:scroll-pe-12 ${isDragging ? "cursor-grabbing select-none" : "md:cursor-grab"}`}
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {portfolioItems.map((item) => (
-              <div
+              <StaggerItem
                 key={item.title}
-                className="relative w-[min(85vw,420px)] max-w-[420px] flex-shrink-0 snap-start"
+                className="relative w-[min(420px,calc(100vw-2.25rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px)))] max-w-[min(420px,calc(100vw-2.25rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px)))] flex-shrink-0 snap-start sm:w-[min(85vw,420px)] sm:max-w-[420px]"
               >
+                <TiltCard
+                  disabled={isDragging}
+                  className="[perspective:1200px]"
+                >
                 <Link
                   data-cursor-hover
                   data-portfolio-card
@@ -177,8 +191,8 @@ export function Portfolio() {
                         alt={item.title}
                         fill
                         draggable={false}
-                        className="object-contain object-top transition duration-700 ease-out group-hover:scale-[1.02]"
-                        sizes="(max-width:768px) 85vw, 420px"
+                        className="object-contain object-top transition duration-700 ease-out group-hover:scale-[1.06]"
+                        sizes="(max-width: 768px) 90vw, 420px"
                       />
                     </div>
                   </div>
@@ -191,10 +205,11 @@ export function Portfolio() {
                     </p>
                   </div>
                 </Link>
-              </div>
+                </TiltCard>
+              </StaggerItem>
             ))}
           </div>
-        </Reveal>
+        </StaggerReveal>
       </div>
     </section>
   );

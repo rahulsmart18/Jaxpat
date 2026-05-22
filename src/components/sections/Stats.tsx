@@ -4,6 +4,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { SectionLabel } from "@/components/SectionLabel";
 import {
   animate,
+  motion,
   useInView,
   useMotionValue,
   useMotionValueEvent,
@@ -36,7 +37,12 @@ function AnimatedStat({
   }, [inView, count, value]);
 
   return (
-    <div ref={ref} className="border border-portoLine bg-white/[0.02] p-8">
+    <motion.div
+      ref={ref}
+      whileHover={{ y: -4, borderColor: "rgba(94,234,212,0.25)" }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+  className="border border-portoLine bg-white/[0.02] p-5 transition-colors sm:p-8"
+    >
       <div className="font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-none tracking-tight text-white">
         {display}
         {suffix}
@@ -44,13 +50,13 @@ function AnimatedStat({
       <p className="mt-3 font-sans text-[11px] uppercase tracking-[0.25em] text-neutral-500">
         {label}
       </p>
-    </div>
+    </motion.div>
   );
 }
 
 export function Stats() {
   return (
-    <section className="border-t border-portoLine px-5 py-24 md:px-8 md:py-32">
+    <section className="border-t border-portoLine porto-safe-x py-24 md:py-32">
       <div className="mx-auto max-w-[1400px]">
         <Reveal>
           <SectionLabel index="06" tag="Stats" eyebrow="Delivery" />

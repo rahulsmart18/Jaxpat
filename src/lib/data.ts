@@ -70,18 +70,24 @@ export const services = [
     description:
       "Spatial interfaces, training simulators, and immersive product demos built for headsets and mobile AR.",
   },
+  {
+    title: "Blockchain Technology",
+    tagline: "Web3, smart contracts, wallets, indexing, secure APIs",
+    description:
+      "On-chain and hybrid products: wallet flows, contract patterns, indexing and events, key management guidance, and backend APIs that stay clear, auditable, and maintainable.",
+  },
 ] as const;
 
 export const experience = [
   {
-    company: "Jaxpat Technology",
+    company: "Jaxpat",
     role: "Principal engineer — AI & platforms",
     period: "2022 - Present",
     detail:
       "Leading delivery of AI-assisted workflows, full-stack services, and secure integrations for clients across hardware and software stacks.",
   },
   {
-    company: "Jaxpat Technology",
+    company: "Jaxpat",
     role: "Tech lead — mobile & edge",
     period: "2016 – 2022",
     detail:
@@ -161,6 +167,13 @@ export const stackTools = [
       "We build immersive VR and AR experiences with performant rendering, interaction design, and production-ready integration with your backend systems.",
   },
   {
+    name: "Blockchain Technology",
+    role: "Web3 · Smart contracts · DApps",
+    value: 85,
+    blurb:
+      "Blockchain-backed products and integrations: wallet flows, smart-contract patterns, indexing, and secure APIs—designed for clarity, auditability, and maintainable delivery.",
+  },
+  {
     name: "Retrieval-Augmented Generation (RAG)",
     role: "AI retrieval technique",
     value: 93,
@@ -181,7 +194,7 @@ export const testimonials = [
     name: "Ellie Sattler",
     role: "Head of product, health tech",
     quote:
-      "Jaxpat Technology shipped our full-stack patient portal and mobile app together—auth, HIPAA-minded patterns, and a roadmap we still follow.",
+      "Jaxpat shipped our full-stack patient portal and mobile app together—auth, HIPAA-minded patterns, and a roadmap we still follow.",
     image: framerImages.testimonialAvatars[1],
   },
   {

@@ -1,3 +1,4 @@
+import { HoverWords } from "@/components/motion/HoverWords";
 import { Reveal } from "@/components/motion/Reveal";
 
 const phases = [
@@ -106,7 +107,7 @@ export function Approach() {
   return (
     <section
       id="approach"
-      className="border-t border-portoLine px-4 py-20 sm:px-6 md:px-8 md:py-32"
+      className="border-t border-portoLine porto-safe-x py-20 md:py-32"
     >
       <div className="relative mx-auto max-w-[1400px] overflow-visible">
         <Reveal>
@@ -122,9 +123,8 @@ export function Approach() {
 
         <div className="mt-14 space-y-10 md:mt-20">
           <Reveal delay={0.05}>
-            <h2 className="font-display text-[clamp(1.35rem,3.8vw,2.65rem)] font-semibold uppercase leading-[1.12] tracking-[-0.03em] text-white md:max-w-[920px] md:leading-[1.15]">
-              We&apos;re Jaxpat Technology, a product-based company based in
-              Chennai, Tamil Nadu.
+            <h2 className="w-full min-w-0 max-w-full font-display text-[clamp(1.15rem,min(4.2vw,3.2svh),2.65rem)] font-semibold uppercase leading-[1.14] tracking-[-0.02em] text-white text-pretty break-words [overflow-wrap:anywhere] sm:tracking-[-0.03em] md:max-w-[920px] md:leading-[1.15] md:tracking-[-0.03em]">
+              <HoverWords text="We're Jaxpat, a product-based company based in Chennai, Tamil Nadu." />
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
@@ -168,7 +168,7 @@ export function Approach() {
                     <PhaseFigure variant={i as 0 | 1 | 2} />
                   </div>
                   <h3 className="mt-8 font-display text-base font-semibold uppercase leading-snug tracking-wide text-white md:text-lg">
-                    {p.title}
+                    <HoverWords as="span" byChar={false} text={p.title} />
                   </h3>
                   <p className="porto-body porto-muted mt-4 text-sm leading-relaxed">
                     {p.body}

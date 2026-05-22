@@ -1,29 +1,24 @@
 "use client";
 
-import { framerSpring } from "@/lib/motion";
+import { AmbientOrbs } from "@/components/AmbientOrbs";
+import { HeroScrollCue } from "@/components/HeroScrollCue";
+import { HoverWords } from "@/components/motion/HoverWords";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { useLoaderComplete } from "@/hooks/useLoaderComplete";
+import { portoEase } from "@/lib/motion";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 
-const line = {
-  hidden: { opacity: 0, y: "36%" },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      ...framerSpring,
-      delay: 0.1 + i * 0.07,
-    },
-  }),
-};
+const heroHidden = { opacity: 0, y: 28, filter: "blur(12px)" };
+const heroVisible = { opacity: 1, y: 0, filter: "blur(0px)" };
 
-/** Dominant word — larger “Jaxpat” headline */
+/** Dominant word — “Jaxpat” only on the hero; legal name lives in the footer */
 const heroPrimaryClass =
-  "font-display font-semibold uppercase leading-[0.82] tracking-[-0.08em] text-white text-[clamp(4rem,min(20vw,26svh),26rem)] sm:tracking-[-0.12em] md:tracking-[-0.16em]";
+  "font-display font-semibold uppercase leading-[0.82] tracking-[-0.08em] text-[clamp(2.85rem,min(18vw,22svh),26rem)] sm:text-[clamp(3.5rem,min(19vw,24svh),26rem)] md:text-[clamp(4rem,min(20vw,26svh),26rem)] sm:tracking-[-0.12em] md:tracking-[-0.16em]";
 
-/** Secondary line — clearly smaller than JAXPAT */
-const heroSecondaryClass =
-  "font-display font-semibold uppercase leading-[0.88] tracking-[-0.04em] text-[rgb(128,128,128)] text-[clamp(1.2rem,min(4.8vw,6svh),5.75rem)] md:text-[clamp(1.35rem,min(4.2vw,7svh),6.5rem)]";
+const heroTaglineClass =
+  "font-sans text-sm font-medium uppercase tracking-[0.14em] md:text-base";
 
 function IconLocation({ className }: { className?: string }) {
   return (
@@ -88,6 +83,7 @@ function IconStack({ className }: { className?: string }) {
 }
 
 export function Hero() {
+  const loaderDone = useLoaderComplete();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -98,59 +94,90 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-x-clip pb-16 pt-[calc(5.25rem+env(safe-area-inset-top,0px))] md:pb-28 md:pt-[calc(6rem+env(safe-area-inset-top,0px))]"
+      className="relative overflow-x-clip pb-16 pt-[calc(4.75rem+env(safe-area-inset-top,0px))] md:pb-28 md:pt-[calc(5.5rem+env(safe-area-inset-top,0px))]"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-15%,rgba(255,255,255,0.06),transparent)]" />
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `
+            radial-gradient(ellipse 45% 40% at 18% 20%, rgba(255, 255, 255, 0.04), transparent 58%),
+            radial-gradient(ellipse 42% 38% at 82% 25%, rgba(255, 255, 255, 0.03), transparent 55%)
+          `,
+        }}
+      />
+      <AmbientOrbs />
 
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 md:px-8">
+      <div className="relative mx-auto max-w-[1400px] porto-safe-x">
         {/* Title — centered like reference */}
-        <h1 className="text-center">
+        <ParallaxLayer distance={28} className="text-center">
+        <h1 className="mx-auto max-w-full text-center break-words">
           <motion.span
-            custom={0}
-            variants={line}
-            initial="hidden"
-            animate="show"
-            className={`block overflow-hidden ${heroPrimaryClass}`}
+            className={`block max-w-full ${heroPrimaryClass}`}
+            initial={heroHidden}
+            animate={loaderDone ? heroVisible : heroHidden}
+            transition={{ duration: 0.9, ease: portoEase, delay: 0.12 }}
           >
-            Jaxpat
+            {loaderDone ? (
+              <HoverWords
+                as="span"
+                byChar
+                text="Jaxpat"
+                className={heroPrimaryClass}
+              />
+            ) : (
+              <span className={heroPrimaryClass} aria-hidden>
+                Jaxpat
+              </span>
+            )}
           </motion.span>
-          <motion.span
-            custom={1}
-            variants={line}
-            initial="hidden"
-            animate="show"
-            className={`mt-1 block overflow-hidden md:mt-2 ${heroSecondaryClass}`}
+          <motion.p
+            initial={heroHidden}
+            animate={loaderDone ? heroVisible : heroHidden}
+            transition={{ duration: 0.85, ease: portoEase, delay: 0.28 }}
+            className={`mx-auto mt-8 max-w-xl text-center ${heroTaglineClass}`}
           >
-            Technology
-          </motion.span>
+            {loaderDone ? (
+              <HoverWords
+                as="span"
+                byChar={false}
+                text="AI · Full-stack · Mobile · Embedded · VR / AR"
+                className={heroTaglineClass}
+              />
+            ) : (
+              <span className={heroTaglineClass} aria-hidden>
+                AI · Full-stack · Mobile · Embedded · VR / AR
+              </span>
+            )}
+          </motion.p>
         </h1>
+        </ParallaxLayer>
 
         {/* Three-column info bar (aligns with backdrop guide lines) */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...framerSpring, delay: 0.32 }}
+          initial={heroHidden}
+          animate={loaderDone ? heroVisible : heroHidden}
+          transition={{ duration: 0.85, ease: portoEase, delay: 0.62 }}
           className="mx-auto mt-10 max-w-[1200px] border-y border-portoLine md:mt-16"
         >
           <div className="divide-y divide-portoLine md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
-            <div className="flex flex-col items-center px-2 py-8 text-center sm:px-4 md:px-6 md:py-10">
-              <IconLocation className="mb-4 shrink-0 text-emerald-400" aria-hidden />
+            <div className="flex flex-col items-center px-3 py-8 text-center phone:px-4 sm:px-4 md:px-6 md:py-10">
+              <IconLocation className="mb-4 shrink-0 text-white/70" aria-hidden />
               <p className="max-w-[260px] font-sans text-[11px] font-medium uppercase leading-relaxed tracking-[0.22em] text-neutral-400 md:tracking-[0.28em]">
                 Based in Chennai,
                 <br />
                 Tamil Nadu
               </p>
             </div>
-            <div className="flex flex-col items-center px-2 py-8 text-center sm:px-4 md:px-6 md:py-10">
-              <IconGlobe className="mb-4 shrink-0 text-neutral-200" aria-hidden />
+            <div className="flex flex-col items-center px-3 py-8 text-center phone:px-4 sm:px-4 md:px-6 md:py-10">
+              <IconGlobe className="mb-4 shrink-0 text-neutral-400" aria-hidden />
               <p className="max-w-[260px] font-sans text-[11px] font-medium uppercase leading-relaxed tracking-[0.22em] text-neutral-400 md:tracking-[0.28em]">
                 Available all around
                 <br />
                 worldwide
               </p>
             </div>
-            <div className="flex flex-col items-center px-2 py-8 text-center sm:px-4 md:px-6 md:py-10">
-              <IconStack className="mb-4 shrink-0 text-sky-400" aria-hidden />
+            <div className="flex flex-col items-center px-3 py-8 text-center phone:px-4 sm:px-4 md:px-6 md:py-10">
+              <IconStack className="mb-4 shrink-0 text-neutral-300" aria-hidden />
               <p className="max-w-[280px] font-sans text-[11px] font-medium uppercase leading-relaxed tracking-[0.22em] text-neutral-400 md:tracking-[0.28em]">
                 AI · Full-stack · Mobile
                 <br />
@@ -163,10 +190,14 @@ export function Hero() {
         {/* Hero image — engineering context */}
         <motion.div
           data-cursor-hover
-          initial={{ opacity: 0, y: 40, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ ...framerSpring, delay: 0.22 }}
-          className="group/portrait relative mx-auto mt-12 aspect-[538/296] w-full max-w-[min(100%,980px)] overflow-hidden rounded-3xl border border-white/[0.12] bg-portoPanel shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.06] transition duration-500 ease-porto hover:border-portoAccent/35 hover:shadow-[0_0_0_1px_rgba(94,234,212,0.12),0_28px_90px_rgba(0,0,0,0.6)] md:mt-16"
+          initial={{ opacity: 0, y: 48, scale: 0.96, filter: "blur(8px)" }}
+          animate={
+            loaderDone
+              ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+              : { opacity: 0, y: 48, scale: 0.96, filter: "blur(8px)" }
+          }
+          transition={{ duration: 1, ease: portoEase, delay: 0.78 }}
+          className="group/portrait relative mx-auto mt-12 aspect-[538/296] w-full max-w-[min(100%,980px)] overflow-hidden rounded-2xl border border-white/[0.12] bg-portoPanel shadow-porto ring-1 ring-white/[0.06] transition-[transform,border-color,box-shadow] duration-500 ease-porto hover:border-white/30 hover:shadow-porto-hover motion-safe:md:hover:-translate-y-1.5 md:rounded-3xl md:mt-16"
         >
           <motion.div
             style={{ y: parallaxY }}
@@ -185,18 +216,20 @@ export function Hero() {
           </motion.div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-portoAccent/25 via-emerald-950/10 to-transparent"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/[0.04]"
             aria-hidden
           />
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.4] mix-blend-overlay"
             style={{
               backgroundImage:
-                "radial-gradient(ellipse 90% 70% at 50% 100%, rgba(94,234,212,0.12), transparent 55%)",
+                "radial-gradient(ellipse 90% 70% at 50% 100%, rgba(255,255,255,0.08), transparent 55%)",
             }}
             aria-hidden
           />
         </motion.div>
+
+        <HeroScrollCue />
       </div>
     </section>
   );

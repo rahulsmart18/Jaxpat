@@ -7,7 +7,7 @@ type Testimonial = (typeof testimonials)[number];
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <div className="relative flex h-[300px] w-[min(78vw,280px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-portoLine bg-portoPanel shadow-porto transition duration-500 ease-porto hover:border-portoAccent/25 hover:shadow-porto-hover">
+    <div className="relative flex h-[clamp(220px,46dvh,300px)] w-[min(88vw,300px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-portoLine bg-portoPanel shadow-porto transition duration-500 ease-porto hover:border-portoAccent/25 hover:shadow-porto-hover sm:w-[min(78vw,280px)]">
       <div className="flex flex-1 gap-3 p-3">
         <div className="relative h-[60px] w-[60px] shrink-0 overflow-hidden rounded-md border border-portoLine">
           <Image src={t.image} alt="" fill className="object-cover" sizes="60px" />

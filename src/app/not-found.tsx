@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+/** Keep this route server-only so dev doesn’t orphan `_not-found` chunks (e.g. missing `./447.js`). */
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center text-white">

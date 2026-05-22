@@ -1,12 +1,17 @@
+"use client";
+
+import { HoverWords } from "@/components/motion/HoverWords";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import { Reveal } from "@/components/motion/Reveal";
+import { TiltCard } from "@/components/motion/TiltCard";
 import { SectionLabel } from "@/components/SectionLabel";
-import Link from "next/link";
 
 export function About() {
   return (
     <section
       id="about"
-      className="border-t border-portoLine px-5 py-24 md:px-8 md:py-32"
+      className="border-t border-portoLine porto-safe-x py-24 md:py-32"
     >
       <div className="mx-auto max-w-[1400px]">
         <Reveal>
@@ -14,22 +19,26 @@ export function About() {
         </Reveal>
         <div className="mt-16 grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20">
           <Reveal delay={0.05}>
-            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-portoLine bg-neutral-900">
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: "url('/Cube.png')",
-                }}
-              />
-            </div>
+            <ParallaxLayer distance={56}>
+              <TiltCard intensity={7} className="[perspective:1200px]">
+                <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-portoLine bg-neutral-900 transition duration-500 hover:border-portoAccent/30">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-105"
+                    style={{
+                      backgroundImage: "url('/Cube.png')",
+                    }}
+                  />
+                </div>
+              </TiltCard>
+            </ParallaxLayer>
           </Reveal>
           <div className="space-y-8">
-            <Reveal delay={0.08}>
-              <h2 className="font-display text-porto-display-sm font-semibold uppercase text-[rgb(128,128,128)]">
-                More About
+            <Reveal delay={0.08} variant="fadeUpBlur">
+              <h2 className="font-display text-porto-display-sm font-semibold uppercase text-brand-secondary">
+                <HoverWords as="span" byChar={false} text="More About" />
               </h2>
               <h2 className="mt-2 font-display text-porto-display font-semibold lowercase text-white porto-lg:mt-1">
-                jaxpat technology
+                <HoverWords as="span" text="jaxpat technology" />
               </h2>
             </Reveal>
             <Reveal delay={0.12}>
@@ -54,12 +63,12 @@ export function About() {
               </p>
             </Reveal>
             <Reveal delay={0.2}>
-              <Link
+              <MagneticButton
                 href="/contact"
-                className="inline-flex rounded-full border border-white/25 px-6 py-3 text-xs font-medium uppercase tracking-[0.2em] text-white shadow-porto transition duration-500 ease-porto hover:border-portoAccent/40 hover:bg-white/[0.08] hover:shadow-porto-hover"
+                className="px-6 py-3 text-xs tracking-[0.2em]"
               >
                 Capability overview
-              </Link>
+              </MagneticButton>
             </Reveal>
           </div>
         </div>

@@ -34,6 +34,7 @@ export function FramerCursor() {
 
   const dotX = useSpring(x, CURSOR_SPRING);
   const dotY = useSpring(y, CURSOR_SPRING);
+  const scale = useSpring(1, { damping: 22, stiffness: 400 });
 
   useLayoutEffect(() => {
     if (!cursorAllowed()) {
@@ -50,12 +51,33 @@ export function FramerCursor() {
       y.set(e.clientY - CURSOR_HALF_PX);
     };
 
+    const onOver = (e: MouseEvent) => {
+      const t = e.target;
+      if (t instanceof Element && t.closest("[data-cursor-hover]")) {
+        scale.set(2.4);
+      }
+    };
+    const onOut = (e: MouseEvent) => {
+      const related = e.relatedTarget;
+      if (
+        related instanceof Element &&
+        related.closest("[data-cursor-hover]")
+      ) {
+        return;
+      }
+      scale.set(1);
+    };
+
     window.addEventListener("mousemove", move, { passive: true });
+    document.addEventListener("mouseover", onOver);
+    document.addEventListener("mouseout", onOut);
     return () => {
       document.documentElement.classList.remove("framer-cursor-active");
       window.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("mouseout", onOut);
     };
-  }, [x, y]);
+  }, [x, y, scale]);
 
   return (
     <AnimatePresence>
@@ -66,6 +88,7 @@ export function FramerCursor() {
           style={{
             left: dotX,
             top: dotY,
+            scale,
             width: CURSOR_SIZE_PX,
             height: CURSOR_SIZE_PX,
             minWidth: CURSOR_SIZE_PX,

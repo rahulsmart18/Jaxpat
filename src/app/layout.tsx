@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Rajdhani } from "next/font/google";
 import { SiteProviders } from "@/components/SiteProviders";
+import { COMPANY_NAME } from "@/lib/site-brand";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,10 +11,22 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+/** Wide geometric tech sans for paragraphs — closer to the Jaxpat logotype than generic UI sans. */
+const rajdhani = Rajdhani({
+  variable: "--font-jaxpat-body",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
-  title: "Jaxpat Technology",
+  title: COMPANY_NAME,
   description:
-    "Jaxpat Technology — a product-based company delivering AI integration, full-stack development, mobile apps, embedded services, and VR/AR. Based in Chennai, Tamil Nadu.",
+    `${COMPANY_NAME} — product engineering: AI, full-stack, mobile, embedded, VR/AR, and blockchain. Chennai, Tamil Nadu.`,
+  icons: {
+    icon: [{ url: "/icon.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export const viewport: Viewport = {
@@ -41,7 +54,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body
+        className={`${inter.variable} ${rajdhani.variable} font-sans antialiased`}
+      >
         <SiteProviders>{children}</SiteProviders>
       </body>
     </html>

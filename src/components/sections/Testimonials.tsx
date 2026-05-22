@@ -1,6 +1,8 @@
 "use client";
 
 import { testimonials } from "@/lib/data";
+import { HoverWords } from "@/components/motion/HoverWords";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionLabel } from "@/components/SectionLabel";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,7 +18,7 @@ export function Testimonials() {
     setIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <section className="border-t border-portoLine px-4 py-20 sm:px-6 md:px-8 md:py-32">
+    <section className="border-t border-portoLine porto-safe-x py-20 md:py-32">
       <div className="mx-auto max-w-[1400px]">
         <Reveal>
           <SectionLabel index="11" tag="Testimonial" eyebrow="Voices" />
@@ -24,35 +26,39 @@ export function Testimonials() {
         <div className="mt-12 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <Reveal delay={0.05}>
             <div>
-              <h2 className="font-display text-porto-display-sm font-semibold uppercase text-[rgb(128,128,128)]">
-                Trusted by
+              <h2 className="font-display text-porto-display-sm font-semibold uppercase text-brand-secondary">
+                <HoverWords as="span" byChar={false} text="Trusted by" />
               </h2>
               <h2 className="mt-2 font-display text-porto-display font-semibold uppercase text-white porto-lg:mt-1">
-                Product &amp; platform teams
+                <HoverWords as="span" byChar={false} text="Product & platform teams" />
               </h2>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="flex flex-wrap gap-3">
-              <button
+              <MagneticButton
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={prev}
-                className="min-h-[44px] touch-manipulation rounded-full border border-white/15 px-5 py-2.5 font-sans text-[10px] uppercase tracking-[0.25em] text-neutral-400 transition hover:border-white/30 hover:text-white active:bg-white/[0.06]"
+                className="text-neutral-400"
               >
                 Back
-              </button>
-              <button
+              </MagneticButton>
+              <MagneticButton
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={next}
-                className="min-h-[44px] touch-manipulation rounded-full border border-white/15 px-5 py-2.5 font-sans text-[10px] uppercase tracking-[0.25em] text-neutral-400 transition hover:border-white/30 hover:text-white active:bg-white/[0.06]"
+                className="text-neutral-400"
               >
                 Next
-              </button>
+              </MagneticButton>
             </div>
           </Reveal>
         </div>
 
-        <div className="relative mt-14 min-h-[320px] overflow-hidden border border-portoLine bg-white/[0.02] p-8 md:p-12">
+        <div className="relative mt-14 min-h-[260px] overflow-hidden border border-portoLine bg-white/[0.02] p-5 sm:min-h-[300px] sm:p-8 md:p-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={t.name}

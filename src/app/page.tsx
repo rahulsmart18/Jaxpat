@@ -5,6 +5,7 @@ import { MarqueeStrip } from "@/components/MarqueeStrip";
 import { PortoBackdrop } from "@/components/PortoBackdrop";
 import { About } from "@/components/sections/About";
 import { Approach } from "@/components/sections/Approach";
+import { ShipProcess } from "@/components/sections/ShipProcess";
 import { Awards } from "@/components/sections/Awards";
 import { CTA } from "@/components/sections/CTA";
 import { Hero } from "@/components/sections/Hero";
@@ -17,7 +18,7 @@ import { VoiceOfGrey } from "@/components/sections/VoiceOfGrey";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-black text-foreground">
+    <div className="relative min-h-screen overflow-x-clip bg-black text-foreground">
       <PortoBackdrop />
       <div className="relative z-10">
         <Header />
@@ -25,6 +26,7 @@ export default function Home() {
           <Hero />
           <MarqueeStrip durationSec={48} />
           <Approach />
+          <ShipProcess />
           <About />
           <MarqueeStrip durationSec={56} />
           <Portfolio />

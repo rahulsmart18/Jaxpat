@@ -1,10 +1,14 @@
 "use client";
 
-import { framerSpring } from "@/lib/motion";
-import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
+import { CompanyLogo } from "@/components/CompanyLogo";
+import { MagneticButton } from "@/components/motion/MagneticButton";
+import { PremiumMenu } from "@/components/nav/PremiumMenu";
+import { useLoaderComplete } from "@/hooks/useLoaderComplete";
+import { isPremiumMenuDisabledForPath } from "@/lib/premium-menu-paths";
+import { portoEase } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function formatTime(d: Date) {
   return d.toLocaleTimeString("en-US", {
@@ -15,49 +19,82 @@ function formatTime(d: Date) {
   });
 }
 
-const PATTERN =
-  "url(https://framerusercontent.com/images/ldf53R2pKtKErtQpdz1GxxWt2I.svg)";
-
-const NAV_ITEMS = [
-  { label: "HOME", href: "/" },
-  { label: "WORK", href: "/#portfolio" },
-  { label: "ABOUT", href: "/#about" },
-  { label: "SERVICES", href: "/#services" },
-  { label: "CONTACT", href: "/contact", muted: true },
-] as const;
-
-function MenuDotsTrigger({
-  onOpen,
-  expanded,
-}: {
-  onOpen: () => void;
-  expanded: boolean;
-}) {
+/** Four dots ↔ X — shared center, minimal crossfade + scale */
+function MenuTriggerIcon({ open }: { open: boolean }) {
   return (
-    <button
-      type="button"
-      aria-expanded={expanded}
-      aria-label="Open menu"
-      onClick={onOpen}
-      className="grid min-h-[44px] min-w-[44px] touch-manipulation place-items-center justify-self-center rounded-md p-2 transition-opacity hover:opacity-90 active:opacity-80"
-    >
-      <span className="grid grid-cols-2 gap-[5px]">
+    <span className="relative flex h-[18px] w-[18px] items-center justify-center md:h-5 md:w-5">
+      <motion.span
+        className="absolute grid grid-cols-2 gap-[5px] [place-items:center]"
+        aria-hidden
+        initial={false}
+        animate={{
+          opacity: open ? 0 : 1,
+          scale: open ? 0.5 : 1,
+          rotate: open ? 45 : 0,
+        }}
+        transition={{ duration: 0.34, ease: portoEase }}
+      >
         {Array.from({ length: 4 }).map((_, i) => (
           <span
             key={i}
-            className="h-[5px] w-[5px] rounded-full bg-white md:h-1.5 md:w-1.5"
+            className="h-[5px] w-[5px] rounded-full bg-white/90 md:h-1.5 md:w-1.5"
           />
         ))}
-      </span>
-    </button>
+      </motion.span>
+      <motion.span
+        className="absolute inset-0 flex items-center justify-center"
+        aria-hidden
+        initial={false}
+        animate={{
+          opacity: open ? 1 : 0,
+          scale: open ? 1 : 0.55,
+        }}
+        transition={{ duration: 0.28, ease: portoEase, delay: open ? 0.05 : 0 }}
+      >
+        <motion.span
+          className="absolute h-[1.5px] w-[19px] rounded-full bg-white md:h-[2px] md:w-[21px]"
+          initial={false}
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.34, ease: portoEase }}
+        />
+        <motion.span
+          className="absolute h-[1.5px] w-[19px] rounded-full bg-white md:h-[2px] md:w-[21px]"
+          initial={false}
+          animate={{ rotate: open ? -45 : 0 }}
+          transition={{ duration: 0.34, ease: portoEase }}
+        />
+      </motion.span>
+    </span>
   );
 }
 
 export function Header() {
+  const loaderDone = useLoaderComplete();
   const [time, setTime] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuTriggerRef = useRef<HTMLButtonElement | null>(null);
+  /**
+   * If mouseup lands on the overlay (not the trigger), the browser may not emit a `click`
+   * on the button — opening on pointerdown avoids a "dead" first gesture.
+   * When we open that way, suppress the following click so it doesn't immediately toggle closed.
+   */
+  const suppressMenuTriggerClickRef = useRef(false);
+  const suppressMenuTriggerClickTimerRef = useRef<number | null>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const menuDisabled = isPremiumMenuDisabledForPath(pathname);
+
+  useEffect(() => {
+    return () => {
+      if (suppressMenuTriggerClickTimerRef.current) {
+        window.clearTimeout(suppressMenuTriggerClickTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (menuDisabled && menuOpen) setMenuOpen(false);
+  }, [menuDisabled, menuOpen]);
 
   useEffect(() => {
     const tick = () => setTime(formatTime(new Date()));
@@ -66,28 +103,9 @@ export function Header() {
     return () => window.clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [menuOpen]);
-
-  /** If the tab is refreshed or navigated away while the menu is open, avoid a stuck `overflow: hidden` body */
-  useEffect(() => {
-    return () => {
-      document.body.style.removeProperty("overflow");
-    };
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
   }, []);
-
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const smoothScrollToId = useCallback((id: string) => {
     const el = document.getElementById(id);
@@ -125,179 +143,113 @@ export function Header() {
 
   return (
     <>
-      {!menuOpen ? (
-        <motion.header
-          initial={{ y: -12, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={framerSpring}
-          className="fixed inset-x-0 top-0 z-[300] border-b border-white/10 bg-gradient-to-b from-black/55 via-black/35 to-black/20 pt-[env(safe-area-inset-top,0px)] shadow-[0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl"
-        >
-            <div
-              className="pointer-events-none absolute inset-0 opacity-[0.06]"
-              style={{
-                backgroundImage: PATTERN,
-                backgroundSize: "13px auto",
-              }}
-              aria-hidden
+      <motion.header
+        initial={{ y: -40, opacity: 0, filter: "blur(8px)" }}
+        animate={
+          loaderDone
+            ? { y: 0, opacity: 1, filter: "blur(0px)" }
+            : { y: -40, opacity: 0, filter: "blur(8px)" }
+        }
+        transition={{ duration: 0.85, ease: portoEase, delay: 0.15 }}
+        className="porto-nav fixed inset-x-0 top-0 z-[300] isolate pt-[env(safe-area-inset-top,0px)] text-white"
+      >
+        <div
+          className="porto-nav-dark-glass pointer-events-none absolute inset-0"
+          aria-hidden
+        />
+        <div className="relative z-10 mx-auto grid min-h-[64px] max-w-[1600px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center ps-[max(1rem,env(safe-area-inset-left,0px))] pe-[max(1rem,env(safe-area-inset-right,0px))] py-2 md:min-h-[72px] md:px-8 md:py-2.5 lg:min-h-[76px]">
+          <div className="flex min-w-0 items-center gap-2.5 border-r border-white/[0.08] py-2 pr-2.5 md:gap-3 md:pr-6">
+            <CompanyLogo
+              variant="original"
+              size={36}
+              priority
+              glow
+              className="h-8 w-8 shrink-0 md:h-9 md:w-9"
             />
-            <div className="relative mx-auto grid min-h-[72px] max-w-[1600px] grid-cols-3 items-center px-4 py-2 md:min-h-[80px] md:px-10 md:py-0">
-              <div className="flex items-center border-r border-portoLine py-3 pr-4 md:pr-8">
-                <div className="font-sans text-[10px] uppercase leading-tight tracking-[0.22em] md:text-[11px]">
-                  <span className="text-neutral-500">LOCAL/</span>{" "}
-                  <span className="font-semibold tabular-nums text-white">
-                    {time || "—"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex justify-center border-r border-portoLine py-3">
-                <MenuDotsTrigger
-                  onOpen={() => setMenuOpen(true)}
-                  expanded={menuOpen}
-                />
-              </div>
-
-              <div className="flex justify-end pl-4 md:pl-8">
-                <Link
-                  href="/contact"
-                  data-cursor-hover
-                  className="inline-flex min-h-[44px] touch-manipulation items-center justify-center rounded-full border border-white/90 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-porto transition duration-500 ease-porto hover:border-portoAccent/50 hover:bg-white/[0.07] hover:shadow-porto-hover active:bg-white/[0.1] md:px-5 md:text-xs"
-                >
-                  CONTACT NOW
-                </Link>
-              </div>
+            <div className="hidden font-sans text-[10px] uppercase leading-tight tracking-[0.22em] text-neutral-500 sm:block md:text-[11px]">
+              <span>LOCAL/</span>{" "}
+              <span className="font-semibold tabular-nums text-white/90">
+                {time || "—"}
+              </span>
             </div>
-        </motion.header>
-      ) : null}
+          </div>
 
-      <AnimatePresence>
-        {menuOpen ? (
-          <motion.div
-            key="overlay"
-            initial={{
-              opacity: 0,
-              clipPath: "circle(0% at 50% 74px)",
-              WebkitClipPath: "circle(0% at 50% 74px)",
-            }}
-            animate={{
-              opacity: 1,
-              clipPath: "circle(150% at 50% 74px)",
-              WebkitClipPath: "circle(150% at 50% 74px)",
-            }}
-            exit={{
-              opacity: 0,
-              clipPath: "circle(0% at 50% 74px)",
-              WebkitClipPath: "circle(0% at 50% 74px)",
-            }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[350] flex flex-col bg-gradient-to-b from-zinc-950 via-black to-black"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Site navigation"
-          >
-            <div
-              className="pointer-events-none absolute inset-0 opacity-[0.07]"
-              style={{
-                backgroundImage: PATTERN,
-                backgroundSize: "13px auto",
-              }}
-              aria-hidden
-            />
-
-            <div className="relative z-10 grid shrink-0 grid-cols-3 items-start border-b border-portoLine px-4 pb-6 pt-[max(1.5rem,env(safe-area-inset-top,0px))] md:px-10 md:pt-8">
-              <p className="justify-self-start font-sans text-[10px] uppercase leading-relaxed tracking-[0.2em] md:text-[11px]">
-                <span className="text-neutral-500">LOCAL/</span>{" "}
-                <span className="text-white">46° 28&apos; 58.6272&quot; N</span>
-              </p>
-              <button
+          <div className="flex shrink-0 justify-center border-r border-white/[0.08] px-2 py-2 md:px-5">
+            {menuDisabled ? (
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center md:h-11 md:w-11"
+                aria-hidden
+              />
+            ) : (
+              <MagneticButton
+                ref={menuTriggerRef}
                 type="button"
-                aria-label="Close menu"
-                onClick={closeMenu}
-                className="justify-self-center flex min-h-[44px] min-w-[44px] touch-manipulation items-center justify-center rounded-md font-sans text-3xl font-light leading-none text-white transition hover:opacity-70 active:opacity-60 md:text-4xl"
+                variant="ghost"
+                size="icon"
+                aria-expanded={menuOpen}
+                aria-haspopup="dialog"
+                aria-controls={menuOpen ? "premium-menu-dialog" : undefined}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                onPointerDown={(e) => {
+                  if (menuOpen) return;
+                  if (e.button !== 0) return;
+                  suppressMenuTriggerClickRef.current = true;
+                  setMenuOpen(true);
+                  if (suppressMenuTriggerClickTimerRef.current) {
+                    window.clearTimeout(suppressMenuTriggerClickTimerRef.current);
+                  }
+                  suppressMenuTriggerClickTimerRef.current = window.setTimeout(
+                    () => {
+                      suppressMenuTriggerClickRef.current = false;
+                      suppressMenuTriggerClickTimerRef.current = null;
+                    },
+                    450,
+                  );
+                }}
+                onClick={(e) => {
+                  const suppressed = suppressMenuTriggerClickRef.current;
+                  if (suppressed) {
+                    suppressMenuTriggerClickRef.current = false;
+                    if (suppressMenuTriggerClickTimerRef.current) {
+                      window.clearTimeout(
+                        suppressMenuTriggerClickTimerRef.current,
+                      );
+                      suppressMenuTriggerClickTimerRef.current = null;
+                    }
+                    e.preventDefault();
+                    return;
+                  }
+                  setMenuOpen((o) => !o);
+                }}
+                className={`${menuOpen ? "border-white/40 bg-white/[0.08]" : ""} h-10 w-10 md:h-11 md:w-11`}
               >
-                ×
-              </button>
-              <div className="justify-self-end">
-                <Link
-                  href="/contact"
-                  data-cursor-hover
-                  onClick={closeMenu}
-                  className="inline-flex min-h-[44px] touch-manipulation items-center justify-center rounded-full border border-white/90 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-porto transition duration-500 ease-porto hover:border-portoAccent/50 hover:bg-white/[0.07] hover:shadow-porto-hover active:bg-white/[0.1] md:px-5 md:text-xs"
-                >
-                  CONTACT NOW
-                </Link>
-              </div>
-            </div>
+                <MenuTriggerIcon open={menuOpen} />
+              </MagneticButton>
+            )}
+          </div>
 
-            <nav className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-0.5 overflow-y-auto px-4 py-6 overscroll-contain md:py-7">
-              {NAV_ITEMS.map((item, i) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{
-                    ...framerSpring,
-                    delay: 0.16 + i * 0.06,
-                  }}
-                >
-                  {item.href.startsWith("/#") ? (
-                    <button
-                      type="button"
-                      onClick={() => navigate(item.href)}
-                      className={`block w-full max-w-[min(100%,22rem)] touch-manipulation py-1 text-center font-display text-[clamp(1.55rem,7.6vh,4.9rem)] font-semibold uppercase leading-[0.9] tracking-[-0.04em] transition hover:opacity-80 sm:max-w-none sm:text-[clamp(1.8rem,7.2vh,5.2rem)] md:text-[clamp(2rem,7.2vh,5.4rem)] max-[780px]:text-[clamp(1.4rem,5.9vh,4rem)] ${
-                        "muted" in item && item.muted
-                          ? "text-neutral-500"
-                          : "text-white"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      prefetch={
-                        item.href === "/" || item.href.startsWith("/contact")
-                      }
-                      onClick={closeMenu}
-                      className={`block w-full max-w-[min(100%,22rem)] touch-manipulation py-1 text-center font-display text-[clamp(1.55rem,7.6vh,4.9rem)] font-semibold uppercase leading-[0.9] tracking-[-0.04em] transition hover:opacity-80 sm:max-w-none sm:text-[clamp(1.8rem,7.2vh,5.2rem)] md:text-[clamp(2rem,7.2vh,5.4rem)] max-[780px]:text-[clamp(1.4rem,5.9vh,4rem)] ${
-                        "muted" in item && item.muted
-                          ? "text-neutral-500"
-                          : "text-white"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </motion.div>
-              ))}
-            </nav>
+          <div className="flex min-w-0 justify-end ps-2.5 md:ps-6">
+            <MagneticButton
+              href="/contact"
+              size="sm"
+              magneticPull={pathname === "/contact"}
+              className="max-w-full min-w-0 min-h-10 px-4 py-2 text-[11px] font-semibold uppercase leading-none tracking-[0.18em] md:min-h-[42px] md:px-5 md:text-[13px] md:tracking-[0.2em]"
+            >
+              <span className="sm:hidden">Contact</span>
+              <span className="hidden sm:inline">Contact now</span>
+            </MagneticButton>
+          </div>
+        </div>
+      </motion.header>
 
-            <div className="relative z-10 flex flex-col gap-6 border-t border-portoLine px-4 pb-[max(2rem,env(safe-area-inset-bottom,0px))] pt-8 md:flex-row md:items-end md:justify-between md:px-10 md:pb-10 md:pt-10">
-              <p className="font-sans text-[10px] uppercase tracking-[0.25em] text-white md:text-[11px]">
-                ©2024 ALL RIGHTS RESERVED
-              </p>
-              <div className="flex flex-wrap gap-x-6 gap-y-2 font-sans text-[10px] uppercase tracking-[0.28em] text-white md:gap-x-8 md:text-[11px]">
-                <a
-                  href="https://www.instagram.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-[44px] touch-manipulation items-center py-2 transition hover:opacity-70 active:opacity-60"
-                >
-                  INSTAGRAM ↗
-                </a>
-                <a
-                  href="https://dribbble.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-[44px] touch-manipulation items-center py-2 transition hover:opacity-70 active:opacity-60"
-                >
-                  DRIBBBLE ↗
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {!menuDisabled && (
+        <PremiumMenu
+          open={menuOpen}
+          onClose={closeMenu}
+          onNavigate={navigate}
+          returnFocusRef={menuTriggerRef}
+        />
+      )}
     </>
   );
 }
