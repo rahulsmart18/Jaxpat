@@ -5,6 +5,7 @@ import { HeroScrollCue } from "@/components/HeroScrollCue";
 import { HoverWords } from "@/components/motion/HoverWords";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { useLoaderComplete } from "@/hooks/useLoaderComplete";
+import { useNarrowViewport } from "@/hooks/useNarrowViewport";
 import { portoEase } from "@/lib/motion";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
@@ -84,6 +85,7 @@ function IconStack({ className }: { className?: string }) {
 
 export function Hero() {
   const loaderDone = useLoaderComplete();
+  const narrow = useNarrowViewport();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -94,7 +96,7 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-x-clip pb-16 pt-[calc(4.75rem+env(safe-area-inset-top,0px))] md:pb-28 md:pt-[calc(5.5rem+env(safe-area-inset-top,0px))]"
+      className="relative overflow-x-clip pb-16 pt-[calc(6.75rem+env(safe-area-inset-top,0px))] max-[380px]:pt-[calc(7rem+env(safe-area-inset-top,0px))] md:pb-28 md:pt-[calc(5.75rem+env(safe-area-inset-top,0px))]"
     >
       <motion.div
         className="pointer-events-none absolute inset-0"
@@ -109,10 +111,10 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-[1400px] porto-safe-x">
         {/* Title — centered like reference */}
-        <ParallaxLayer distance={28} className="text-center">
-        <h1 className="mx-auto max-w-full text-center break-words">
+        <ParallaxLayer distance={narrow ? 0 : 28} className="text-center">
+        <h1 className="mx-auto max-w-full px-0.5 text-center sm:px-0">
           <motion.span
-            className={`block max-w-full ${heroPrimaryClass}`}
+            className={`block max-w-full pb-1 ${heroPrimaryClass}`}
             initial={heroHidden}
             animate={loaderDone ? heroVisible : heroHidden}
             transition={{ duration: 0.9, ease: portoEase, delay: 0.12 }}
@@ -134,8 +136,9 @@ export function Hero() {
             initial={heroHidden}
             animate={loaderDone ? heroVisible : heroHidden}
             transition={{ duration: 0.85, ease: portoEase, delay: 0.28 }}
-            className={`mx-auto mt-8 max-w-xl text-center ${heroTaglineClass}`}
+            className={`mx-auto mt-8 w-full max-w-xl px-1 text-center ${heroTaglineClass}`}
           >
+            <div className="flex w-full justify-center">
             {loaderDone ? (
               <HoverWords
                 as="span"
@@ -148,6 +151,7 @@ export function Hero() {
                 AI · Full-stack · Mobile · Embedded · VR / AR
               </span>
             )}
+            </div>
           </motion.p>
         </h1>
         </ParallaxLayer>

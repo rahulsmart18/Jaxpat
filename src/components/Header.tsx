@@ -151,14 +151,14 @@ export function Header() {
             : { y: -40, opacity: 0 }
         }
         transition={{ duration: 0.85, ease: portoEase, delay: 0.15 }}
-        className="porto-nav fixed inset-x-0 top-0 z-[300] isolate pt-[env(safe-area-inset-top,0px)] text-white"
+        className="porto-nav fixed inset-x-0 top-0 z-[300] isolate overflow-visible pt-[env(safe-area-inset-top,0px)] text-white"
       >
         <div
           className="porto-nav-dark-glass pointer-events-none absolute inset-0"
           aria-hidden
         />
         <div className="relative z-10 mx-auto grid min-h-[64px] max-w-[1600px] min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center ps-[max(0.75rem,env(safe-area-inset-left,0px))] pe-[max(0.75rem,env(safe-area-inset-right,0px))] py-2 md:min-h-[72px] md:px-8 md:py-2.5 lg:min-h-[76px]">
-          <div className="flex min-w-0 items-center gap-2 border-r border-white/[0.08] py-2 pr-2 md:gap-3 md:pr-6">
+          <div className="flex min-w-0 items-center gap-2 overflow-visible border-r border-white/[0.08] py-2.5 pr-2 md:gap-3 md:py-2 md:pr-6">
             <CompanyLogo
               variant="original"
               size={36}

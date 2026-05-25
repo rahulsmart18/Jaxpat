@@ -159,17 +159,17 @@ export function Portfolio() {
           </Reveal>
         </div>
 
-        <StaggerReveal className="mt-14">
+        <StaggerReveal className="mt-14 min-w-0">
           <div
             ref={scrollerRef}
             onMouseDown={onScrollerMouseDown}
-            className={`flex touch-pan-x gap-4 overflow-x-auto overscroll-x-contain pb-4 ps-0 pe-[max(1.25rem,env(safe-area-inset-right,0px))] [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-5 sm:pe-10 md:pe-12 [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-ps-4 scroll-pe-[max(1.25rem,env(safe-area-inset-right,0px))] sm:scroll-pe-10 md:scroll-pe-12 ${isDragging ? "cursor-grabbing select-none" : "md:cursor-grab"}`}
+            className={`flex min-w-0 touch-pan-x gap-3 overflow-x-auto overscroll-x-contain pb-4 ps-0 pe-[max(1rem,env(safe-area-inset-right,0px))] [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-5 sm:pe-10 md:pe-12 [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-ps-2 scroll-pe-[max(1rem,env(safe-area-inset-right,0px))] sm:scroll-pe-10 md:scroll-pe-12 ${isDragging ? "cursor-grabbing select-none" : "md:cursor-grab"}`}
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {portfolioItems.map((item) => (
               <StaggerItem
                 key={item.title}
-                className="relative w-[min(420px,calc(100vw-2.25rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px)))] max-w-[min(420px,calc(100vw-2.25rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px)))] flex-shrink-0 snap-start sm:w-[min(85vw,420px)] sm:max-w-[420px]"
+                className="relative w-[min(420px,calc(100svw-2.25rem))] max-w-[min(420px,calc(100svw-2.25rem))] shrink-0 snap-start sm:w-[min(420px,calc(100svw-3rem))] sm:max-w-[min(420px,calc(100svw-3rem))] md:w-[min(420px,85vw)] md:max-w-[420px]"
               >
                 <TiltCard
                   disabled={isDragging}
@@ -184,14 +184,14 @@ export function Portfolio() {
                   draggable={false}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-portoLine bg-portoPanel shadow-porto transition duration-500 ease-porto hover:border-portoAccent/25 hover:shadow-porto-hover"
                 >
-                  <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-zinc-950 md:aspect-video">
-                    <div className="absolute inset-2 sm:inset-2.5">
+                  <div className="relative aspect-[16/11] w-full shrink-0 overflow-hidden bg-zinc-950 sm:aspect-[16/10] md:aspect-video">
+                    <div className="absolute inset-1.5 sm:inset-2.5">
                       <Image
                         src={item.image}
                         alt={item.title}
                         fill
                         draggable={false}
-                        className="object-contain object-top transition duration-700 ease-out group-hover:scale-[1.06]"
+                        className="object-cover object-center transition duration-700 ease-out group-hover:scale-[1.06] md:object-contain md:object-top"
                         sizes="(max-width: 768px) 90vw, 420px"
                       />
                     </div>
