@@ -181,19 +181,18 @@ export function ScrambleText({
         className="scramble-text-inner inline-block"
         initial={
           trigger === "mount"
-            ? { opacity: 0, y: 10, filter: "blur(8px)" }
-            : { opacity: 1, y: 0, filter: "blur(0px)" }
+            ? { opacity: 0, y: 10 }
+            : { opacity: 1, y: 0 }
         }
         animate={
           active
             ? {
                 opacity: 1,
                 y: 0,
-                filter: done ? "blur(0px)" : "blur(2px)",
               }
             : trigger === "mount"
-              ? { opacity: 0, y: 10, filter: "blur(8px)" }
-              : { opacity: 1, y: 0, filter: "blur(0px)" }
+              ? { opacity: 0, y: 10 }
+              : { opacity: 1, y: 0 }
         }
         transition={{ duration: 0.65, ease: portoEase }}
       >

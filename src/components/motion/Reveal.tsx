@@ -22,10 +22,10 @@ type RevealProps = {
 
 const variantDefaults: Record<
   RevealVariant,
-  { y: number; x?: number; scale?: number; blur?: number }
+  { y: number; x?: number; scale?: number }
 > = {
   fadeUp: { y: 48 },
-  fadeUpBlur: { y: 36, blur: 10 },
+  fadeUpBlur: { y: 36 },
   slideLeft: { x: -40, y: 0 },
   slideRight: { x: 40, y: 0 },
   scaleIn: { y: 0, scale: 0.94 },
@@ -62,7 +62,6 @@ export function Reveal({
 
     if (preset.x !== undefined) from.x = preset.x;
     if (preset.scale !== undefined) from.scale = preset.scale;
-    if (preset.blur) from.filter = `blur(${preset.blur}px)`;
 
     const ctx = gsap.context(() => {
       gsap.set(el, {
@@ -70,14 +69,12 @@ export function Reveal({
         y: y ?? preset.y ?? 0,
         x: preset.x ?? 0,
         scale: preset.scale ?? 1,
-        filter: preset.blur ? `blur(${preset.blur}px)` : "none",
       });
       gsap.to(el, {
         autoAlpha: 1,
         y: 0,
         x: 0,
         scale: 1,
-        filter: "blur(0px)",
         duration: 1.05,
         delay,
         ease: "expo.out",

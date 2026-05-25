@@ -53,8 +53,8 @@ export function ProcessOrbit() {
     <motion.div
       ref={ref}
       className="relative mx-auto aspect-[400/360] w-full max-w-[min(100%,420px)]"
-      initial={{ opacity: 0, scale: 0.96, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+      initial={{ opacity: 0, scale: 0.96 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.75, ease: portoEase }}
     >

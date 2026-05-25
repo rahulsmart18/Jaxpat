@@ -111,13 +111,15 @@ export function Approach() {
     >
       <div className="relative mx-auto max-w-[1400px] overflow-visible">
         <Reveal>
-          <div className="flex flex-col gap-3 border-b border-portoLine pb-8 font-sans text-[11px] uppercase tracking-[0.24em] text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:text-[10px] sm:tracking-[0.28em] md:text-[11px] md:tracking-[0.32em]">
+          <div className="grid grid-cols-1 gap-3 border-b border-portoLine pb-8 font-sans text-[11px] uppercase tracking-[0.24em] text-neutral-500 sm:grid-cols-3 sm:items-center sm:gap-4 sm:text-[10px] sm:tracking-[0.28em] md:text-[11px] md:tracking-[0.32em]">
             <span className="text-neutral-600 sm:justify-self-start">01</span>
-            <span className="text-center sm:flex-1">
+            <span className="text-center sm:justify-self-center">
               <span className="text-portoAccent">{"//"}</span>{" "}
               <span className="text-neutral-400">Approach</span>
             </span>
-            <span className="text-neutral-600 sm:text-right">Three phases</span>
+            <span className="text-neutral-600 sm:justify-self-end">
+              Three phases
+            </span>
           </div>
         </Reveal>
 

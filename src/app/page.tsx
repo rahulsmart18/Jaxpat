@@ -18,7 +18,7 @@ import { VoiceOfGrey } from "@/components/sections/VoiceOfGrey";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-black text-foreground">
+    <div className="relative min-h-svh overflow-x-clip bg-black text-foreground">
       <PortoBackdrop />
       <div className="relative z-10">
         <Header />

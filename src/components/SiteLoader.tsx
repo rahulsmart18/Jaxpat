@@ -113,11 +113,10 @@ export function SiteLoader() {
     if (logoEl) {
       gsap.fromTo(
         logoEl,
-        { opacity: 0, scale: 0.82, filter: "blur(14px)" },
+        { opacity: 0, scale: 0.82 },
         {
           opacity: 1,
           scale: 1,
-          filter: "blur(0px)",
           duration: 0.85,
           ease: "expo.out",
           delay: 0.05,

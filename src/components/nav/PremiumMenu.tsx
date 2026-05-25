@@ -3,7 +3,8 @@
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { MenuNavLink } from "@/components/nav/MenuNavLink";
-import { stopLenis, startLenis } from "@/lib/lenis-control";
+import { isIOSOrIPadOS } from "@/lib/browser";
+import { startLenis, stopLenis } from "@/lib/lenis-control";
 import { portoEase } from "@/lib/motion";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -67,12 +68,39 @@ export function PremiumMenu({
   useEffect(() => {
     if (!open) return;
     stopLenis();
-    const prev = document.body.style.overflow;
+
+    const prevOverflow = document.body.style.overflow;
+    const prevPosition = document.body.style.position;
+    const prevTop = document.body.style.top;
+    const prevLeft = document.body.style.left;
+    const prevRight = document.body.style.right;
+    const prevWidth = document.body.style.width;
+
     document.body.classList.add("menu-open");
+
+    const useFixedLock = isIOSOrIPadOS();
+    const scrollY = useFixedLock ? window.scrollY : 0;
+
+    if (useFixedLock) {
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    }
     document.body.style.overflow = "hidden";
+
     return () => {
       document.body.classList.remove("menu-open");
-      document.body.style.overflow = prev;
+      document.body.style.overflow = prevOverflow;
+      if (useFixedLock) {
+        document.body.style.position = prevPosition;
+        document.body.style.top = prevTop;
+        document.body.style.left = prevLeft;
+        document.body.style.right = prevRight;
+        document.body.style.width = prevWidth;
+        window.scrollTo(0, scrollY);
+      }
       startLenis();
     };
   }, [open]);
@@ -164,7 +192,7 @@ export function PremiumMenu({
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"
-          className="premium-menu-root fixed inset-0 z-[600] max-h-[100dvh] overflow-x-clip overflow-y-hidden"
+          className="premium-menu-root fixed inset-0 z-[600] max-h-svh overflow-x-clip overflow-y-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -185,7 +213,7 @@ export function PremiumMenu({
           />
 
           <motion.div
-            className="premium-menu-panel absolute inset-0 z-10 flex h-[100dvh] max-h-[100dvh] min-h-0 flex-col overflow-x-clip overflow-y-hidden border border-white/[0.07] bg-[#06080f] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_40px_120px_rgba(0,0,0,0.92)] backdrop-blur-xl backdrop-saturate-150"
+            className="premium-menu-panel absolute inset-0 z-10 flex h-svh max-h-svh min-h-0 flex-col overflow-x-clip overflow-y-hidden border border-white/[0.07] bg-[#06080f] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_40px_120px_rgba(0,0,0,0.92)] backdrop-blur-md backdrop-saturate-125 md:backdrop-blur-lg"
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.99 }}

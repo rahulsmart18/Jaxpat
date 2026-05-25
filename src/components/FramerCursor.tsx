@@ -1,5 +1,6 @@
 "use client";
 
+import { isFirefox, isIOSOrIPadOS, isWebKitSafari } from "@/lib/browser";
 import {
   AnimatePresence,
   motion,
@@ -16,6 +17,9 @@ const CURSOR_HALF_PX = CURSOR_SIZE_PX / 2;
 
 function cursorAllowed(): boolean {
   if (typeof window === "undefined") return false;
+  // `mix-blend-mode: difference` + fixed layers are glitchy on WebKit / iOS;
+  // Firefox shows extra repaints with a custom cursor over animated layers.
+  if (isIOSOrIPadOS() || isWebKitSafari() || isFirefox()) return false;
   // Primary pointer is fine (mouse / trackpad). Do not require `!coarse`:
   // many laptops report both fine + coarse for touchscreen + mouse.
   return window.matchMedia("(pointer: fine)").matches;

@@ -44,6 +44,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `:root{color-scheme:dark}html{background-color:#020202}body{margin:0;background-color:#020202;color:#f5f5f5}`,
+          }}
+        />
         <link
           rel="preconnect"
           href="https://api.fontshare.com"
@@ -55,7 +60,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${rajdhani.variable} font-sans antialiased`}
+        className={`${inter.variable} ${rajdhani.variable} font-sans min-h-svh min-w-0 antialiased`}
       >
         <SiteProviders>{children}</SiteProviders>
       </body>

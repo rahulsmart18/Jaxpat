@@ -106,9 +106,9 @@ export default function ContactView() {
     <>
       <div className="relative z-10 border-b border-portoLine porto-safe-x-loose pb-[max(4rem,env(safe-area-inset-bottom,0px))] pt-[calc(4.75rem+env(safe-area-inset-top,0px))] md:pb-24 md:pt-[calc(5.5rem+env(safe-area-inset-top,0px))]">
         <div className="mx-auto grid max-w-[1400px] min-w-0 gap-14 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-16">
-          <div>
+          <div className="min-w-0">
             <Reveal>
-              <h1 className="font-display text-[clamp(2.5rem,8vw,4.5rem)] font-bold uppercase leading-[0.95] tracking-tight">
+              <h1 className="font-display text-[clamp(1.85rem,7vw,3.25rem)] font-bold uppercase leading-[0.95] tracking-tight sm:text-[clamp(2.25rem,6vw,4rem)]">
                 <HoverWords
                   as="span"
                   byChar={false}
@@ -236,7 +236,7 @@ export default function ContactView() {
               <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-white">
                 Email me
               </p>
-              <div className="porto-muted mt-6 space-y-3 text-sm font-medium uppercase leading-relaxed">
+              <div className="porto-muted mt-6 space-y-3 break-words text-sm font-medium uppercase leading-relaxed">
                 <p>
                   <a
                     href={`mailto:${COMPANY_EMAIL_PRIMARY}`}
@@ -265,12 +265,12 @@ export default function ContactView() {
         <Reveal>
           <ParallaxLayer distance={32} className="text-center">
             <h2>
-              <span className="mx-auto block max-w-full break-words font-display text-[clamp(2.85rem,min(18vw,22svh),26rem)] font-semibold uppercase leading-[0.82] tracking-[-0.08em] sm:text-[clamp(3.5rem,min(19vw,24svh),26rem)] sm:tracking-[-0.12em] md:text-[clamp(4rem,min(20vw,26svh),26rem)] md:tracking-[-0.16em]">
+              <span className="mx-auto block max-w-full break-words font-display text-[clamp(2.15rem,min(12.5vw,18svh),14rem)] font-semibold uppercase leading-[0.82] tracking-[-0.08em] phone:text-[clamp(2.45rem,min(14vw,20svh),16rem)] sm:text-[clamp(3rem,min(17vw,22svh),20rem)] sm:tracking-[-0.1em] md:text-[clamp(3.75rem,min(18vw,24svh),24rem)] md:tracking-[-0.14em]">
                 <HoverWords
                   as="span"
                   byChar
                   text="Jaxpat"
-                  className="font-display text-[clamp(2.85rem,min(18vw,22svh),26rem)] font-semibold uppercase leading-[0.82] tracking-[-0.08em] sm:text-[clamp(3.5rem,min(19vw,24svh),26rem)] sm:tracking-[-0.12em] md:text-[clamp(4rem,min(20vw,26svh),26rem)] md:tracking-[-0.16em]"
+                  className="font-display text-[clamp(2.15rem,min(12.5vw,18svh),14rem)] font-semibold uppercase leading-[0.82] tracking-[-0.08em] phone:text-[clamp(2.45rem,min(14vw,20svh),16rem)] sm:text-[clamp(3rem,min(17vw,22svh),20rem)] sm:tracking-[-0.1em] md:text-[clamp(3.75rem,min(18vw,24svh),24rem)] md:tracking-[-0.14em]"
                 />
               </span>
             </h2>

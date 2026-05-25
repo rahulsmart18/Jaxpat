@@ -10,15 +10,15 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 
-const heroHidden = { opacity: 0, y: 28, filter: "blur(12px)" };
-const heroVisible = { opacity: 1, y: 0, filter: "blur(0px)" };
+const heroHidden = { opacity: 0, y: 28 };
+const heroVisible = { opacity: 1, y: 0 };
 
 /** Dominant word — “Jaxpat” only on the hero; legal name lives in the footer */
 const heroPrimaryClass =
-  "font-display font-semibold uppercase leading-[0.82] tracking-[-0.08em] text-[clamp(2.85rem,min(18vw,22svh),26rem)] sm:text-[clamp(3.5rem,min(19vw,24svh),26rem)] md:text-[clamp(4rem,min(20vw,26svh),26rem)] sm:tracking-[-0.12em] md:tracking-[-0.16em]";
+  "font-display font-semibold uppercase leading-[0.82] tracking-[-0.08em] text-[clamp(2.15rem,min(12.5vw,18svh),14rem)] phone:text-[clamp(2.45rem,min(14vw,20svh),16rem)] sm:text-[clamp(3rem,min(17vw,22svh),20rem)] md:text-[clamp(3.75rem,min(18vw,24svh),24rem)] sm:tracking-[-0.1em] md:tracking-[-0.14em]";
 
 const heroTaglineClass =
-  "font-sans text-sm font-medium uppercase tracking-[0.14em] md:text-base";
+  "font-sans text-xs font-medium uppercase tracking-[0.12em] sm:text-sm sm:tracking-[0.14em] md:text-base";
 
 function IconLocation({ className }: { className?: string }) {
   return (
@@ -179,7 +179,7 @@ export function Hero() {
             <div className="flex flex-col items-center px-3 py-8 text-center phone:px-4 sm:px-4 md:px-6 md:py-10">
               <IconStack className="mb-4 shrink-0 text-neutral-300" aria-hidden />
               <p className="max-w-[280px] font-sans text-[11px] font-medium uppercase leading-relaxed tracking-[0.22em] text-neutral-400 md:tracking-[0.28em]">
-                AI · Full-stack · Mobile
+                AI · Full-stack · Mobile ·
                 <br />
                 Embedded · VR / AR
               </p>
@@ -190,11 +190,11 @@ export function Hero() {
         {/* Hero image — engineering context */}
         <motion.div
           data-cursor-hover
-          initial={{ opacity: 0, y: 48, scale: 0.96, filter: "blur(8px)" }}
+          initial={{ opacity: 0, y: 48, scale: 0.96 }}
           animate={
             loaderDone
-              ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
-              : { opacity: 0, y: 48, scale: 0.96, filter: "blur(8px)" }
+              ? { opacity: 1, y: 0, scale: 1 }
+              : { opacity: 0, y: 48, scale: 0.96 }
           }
           transition={{ duration: 1, ease: portoEase, delay: 0.78 }}
           className="group/portrait relative mx-auto mt-12 aspect-[538/296] w-full max-w-[min(100%,980px)] overflow-hidden rounded-2xl border border-white/[0.12] bg-portoPanel shadow-porto ring-1 ring-white/[0.06] transition-[transform,border-color,box-shadow] duration-500 ease-porto hover:border-white/30 hover:shadow-porto-hover motion-safe:md:hover:-translate-y-1.5 md:rounded-3xl md:mt-16"

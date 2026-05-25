@@ -1,5 +1,6 @@
 "use client";
 
+import { shouldDisableLenisSmoothScroll } from "@/lib/browser";
 import { setLenis } from "@/lib/lenis-control";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -16,6 +17,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (reduceMotion) return;
+    if (shouldDisableLenisSmoothScroll()) return;
 
     const lenis = new Lenis({
       lerp: 0.085,

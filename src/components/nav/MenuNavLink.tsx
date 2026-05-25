@@ -19,7 +19,7 @@ export function MenuNavLink({
   index,
   muted = false,
 }: MenuNavLinkProps) {
-  const className = `group relative flex min-h-[44px] w-full touch-manipulation items-center justify-center py-1.5 text-center font-display text-[clamp(1.1rem,min(4vw,6dvh),2.85rem)] font-semibold uppercase leading-[1.05] tracking-[-0.04em] transition-colors duration-500 min-[380px]:text-[clamp(1.2rem,min(4.5vw,6.5dvh),3rem)] sm:min-h-0 sm:py-2 sm:text-[clamp(1.3rem,min(5vw,7dvh),3.35rem)] md:text-[clamp(1.45rem,min(5.5vw,7dvh),3.85rem)] lg:text-[clamp(1.55rem,5.25vw,4.25rem)] ${
+  const className = `group relative flex min-h-[44px] w-full touch-manipulation items-center justify-center py-1.5 text-center font-display text-[clamp(1.1rem,min(4vw,6svh),2.85rem)] font-semibold uppercase leading-[1.05] tracking-[-0.04em] transition-colors duration-500 min-[380px]:text-[clamp(1.2rem,min(4.5vw,6.5svh),3rem)] sm:min-h-0 sm:py-2 sm:text-[clamp(1.3rem,min(5vw,7svh),3.35rem)] md:text-[clamp(1.45rem,min(5.5vw,7svh),3.85rem)] lg:text-[clamp(1.55rem,5.25vw,4.25rem)] ${
     muted ? "text-neutral-500" : "text-white"
   }`;
 
@@ -41,8 +41,8 @@ export function MenuNavLink({
 
   return (
     <motion.li
-      initial={{ opacity: 0, y: 48, filter: "blur(10px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={{ opacity: 0, y: 48 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{
         delay: 0.22 + index * 0.07,
         duration: 0.75,

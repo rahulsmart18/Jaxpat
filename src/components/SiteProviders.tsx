@@ -1,5 +1,6 @@
 "use client";
 
+import { BrowserHtmlFlags } from "@/components/BrowserHtmlFlags";
 import { FramerCursor } from "@/components/FramerCursor";
 import { GsapScrollSetup } from "@/components/GsapScrollSetup";
 import { PageEntrance } from "@/components/PageEntrance";
@@ -11,6 +12,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 export function SiteProviders({ children }: { children: React.ReactNode }) {
   return (
     <SmoothScroll>
+      <BrowserHtmlFlags />
       <SiteLoader />
       <GsapScrollSetup />
       <ScrollProgress />

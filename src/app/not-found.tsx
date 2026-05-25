@@ -3,7 +3,7 @@ import Link from "next/link";
 /** Keep this route server-only so dev doesn’t orphan `_not-found` chunks (e.g. missing `./447.js`). */
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center text-white">
+    <div className="flex min-h-svh flex-col items-center justify-center bg-black px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))] text-center text-white">
       <p className="text-xs font-semibold uppercase tracking-[0.35em] text-neutral-500">
         404
       </p>

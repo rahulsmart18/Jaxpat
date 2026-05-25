@@ -25,7 +25,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         animate={pageTransition.animate}
         exit={pageTransition.exit}
         transition={pageTransition.transition}
-        className="min-h-screen"
+        className="min-h-0"
       >
         {children}
       </motion.div>
