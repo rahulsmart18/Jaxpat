@@ -105,7 +105,7 @@ export function Portfolio() {
   return (
     <section
       id="portfolio"
-      className="border-t border-portoLine porto-safe-x py-20 md:py-32"
+      className="scroll-mt-[calc(6.75rem+env(safe-area-inset-top,0px))] border-t border-portoLine porto-safe-x py-20 md:py-32"
     >
       <div className="mx-auto max-w-[1400px]">
         <Reveal>
@@ -184,14 +184,14 @@ export function Portfolio() {
                   draggable={false}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-portoLine bg-portoPanel shadow-porto transition duration-500 ease-porto hover:border-portoAccent/25 hover:shadow-porto-hover"
                 >
-                  <div className="relative aspect-[16/11] w-full shrink-0 overflow-hidden bg-zinc-950 sm:aspect-[16/10] md:aspect-video">
+                  <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-zinc-950 md:aspect-video">
                     <div className="absolute inset-1.5 sm:inset-2.5">
                       <Image
                         src={item.image}
                         alt={item.title}
                         fill
                         draggable={false}
-                        className="object-cover object-center transition duration-700 ease-out group-hover:scale-[1.06] md:object-contain md:object-top"
+                        className="object-contain object-center transition duration-700 ease-out group-hover:scale-[1.03] md:object-cover md:object-top"
                         sizes="(max-width: 768px) 90vw, 420px"
                       />
                     </div>

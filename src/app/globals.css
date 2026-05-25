@@ -28,8 +28,8 @@ html {
   scroll-behavior: smooth;
   overflow-x: clip;
   scroll-padding-top: max(
-    5.5rem,
-    calc(env(safe-area-inset-top, 0px) + 4.75rem)
+    6.25rem,
+    calc(env(safe-area-inset-top, 0px) + 5.5rem)
   );
 }
 
