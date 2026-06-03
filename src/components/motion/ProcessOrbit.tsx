@@ -3,13 +3,10 @@
 import { portoEase } from "@/lib/motion";
 import {
   motion,
-  useMotionValueEvent,
   useReducedMotion,
-  useScroll,
-  useSpring,
   useTransform,
+  type MotionValue,
 } from "framer-motion";
-import { useRef, useState } from "react";
 
 const STEPS = ["BRIEF", "UI", "API", "DATA", "AI", "SHIP"] as const;
 
@@ -25,33 +22,24 @@ const NODES = [
 const HEX_PATH =
   "M 200 48 L 318 116 L 318 244 L 200 312 L 82 244 L 82 116 Z";
 
-export function ProcessOrbit() {
-  const ref = useRef<HTMLDivElement>(null);
+type ProcessOrbitProps = {
+  progress: MotionValue<number>;
+  activeIndex: number;
+};
+
+export function ProcessOrbit({ progress, activeIndex }: ProcessOrbitProps) {
   const reduceMotion = useReducedMotion();
-  const [activeIndex, setActiveIndex] = useState(0);
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 0.8", "end 0.3"],
-  });
+  const pathLength = useTransform(progress, [0, 1], [0, 1]);
+  const ringRotate = useTransform(progress, [0, 1], [0, 42]);
+  const centerGlow = useTransform(progress, [0, 1], [0.12, 0.3]);
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 160,
-    damping: 32,
-    mass: 0.28,
-  });
-
-  const pathLength = useTransform(smoothProgress, [0, 1], [0, 1]);
-  const ringRotate = useTransform(smoothProgress, [0, 1], [0, 42]);
-  const centerGlow = useTransform(smoothProgress, [0, 1], [0.12, 0.3]);
-
-  useMotionValueEvent(smoothProgress, "change", (v) => {
-    setActiveIndex(Math.min(STEPS.length - 1, Math.floor(v * STEPS.length)));
-  });
+  const safeIndex = Math.max(0, Math.min(STEPS.length - 1, activeIndex));
+  const activeLabel = NODES[safeIndex].label;
+  const activeStep = STEPS[safeIndex];
 
   return (
     <motion.div
-      ref={ref}
       className="relative mx-auto aspect-[400/360] w-full max-w-[min(100%,420px)]"
       initial={{ opacity: 0, scale: 0.96 }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -99,18 +87,18 @@ export function ProcessOrbit() {
               r={6}
               fill="#0a0a0a"
               stroke={
-                activeIndex === i
+                safeIndex === i
                   ? "rgba(26,127,237,0.95)"
                   : "rgba(184,197,212,0.35)"
               }
-              strokeWidth={activeIndex === i ? 2 : 1.25}
+              strokeWidth={safeIndex === i ? 2 : 1.25}
               animate={{
-                scale: activeIndex === i ? 1.4 : 1,
-                opacity: activeIndex === i ? 1 : 0.45,
+                scale: safeIndex === i ? 1.4 : 1,
+                opacity: safeIndex === i ? 1 : 0.45,
               }}
               transition={{ type: "spring", stiffness: 320, damping: 22 }}
             />
-            {activeIndex === i ? (
+            {safeIndex === i ? (
               <circle
                 r={18}
                 fill="none"
@@ -121,7 +109,7 @@ export function ProcessOrbit() {
             <text
               y={24}
               textAnchor="middle"
-              fill={activeIndex === i ? "#B8C5D4" : "#4A5568"}
+              fill={safeIndex === i ? "#B8C5D4" : "#4A5568"}
               style={{ fontSize: 9, fontFamily: "var(--font-inter), sans-serif" }}
             >
               {node.label}
@@ -132,16 +120,16 @@ export function ProcessOrbit() {
 
       <motion.div
         className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center"
-        key={STEPS[activeIndex]}
+        key={activeStep}
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: portoEase }}
       >
-        <span className="font-display text-4xl font-semibold text-white/12 md:text-5xl">
-          06
+        <span className="font-display text-4xl font-semibold text-white/80 md:text-6xl">
+          {activeLabel}
         </span>
         <span className="mt-2 font-sans text-[9px] uppercase tracking-[0.42em] text-neutral-400">
-          {STEPS[activeIndex]}
+          {activeStep}
         </span>
       </motion.div>
     </motion.div>

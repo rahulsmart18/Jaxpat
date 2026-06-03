@@ -288,7 +288,122 @@ body {
 }
 
 .site-loader-rahul-curtain {
-  will-change: transform;
+  background: #000;
+  will-change: opacity, transform;
+  overflow: hidden;
+}
+
+.site-loader-rahul-matrix-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: contrast(1.1) saturate(1.25) brightness(1.02);
+}
+
+.site-loader-rahul-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(26, 127, 237, 0.1) 0px,
+      rgba(26, 127, 237, 0.1) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(
+      ellipse at center,
+      rgba(11, 29, 53, 0.0) 50%,
+      rgba(6, 18, 32, 0.85) 100%
+    );
+  mix-blend-mode: screen;
+  animation: site-loader-rahul-scanline-shift 2.2s linear infinite;
+}
+
+@keyframes site-loader-rahul-scanline-shift {
+  0% {
+    background-position:
+      0 0,
+      0 0;
+  }
+  100% {
+    background-position:
+      0 6px,
+      0 0;
+  }
+}
+
+.site-loader-rahul-glitch {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(2rem, 6vw, 4.25rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgb(var(--brand-circuit));
+  text-shadow:
+    0 0 8px rgba(26, 127, 237, 0.55),
+    0 0 22px rgba(26, 127, 237, 0.4),
+    0 0 36px rgba(0, 86, 179, 0.3);
+  pointer-events: none;
+  will-change: opacity, transform;
+  white-space: nowrap;
+}
+
+.site-loader-rahul-glitch span {
+  position: relative;
+  display: inline-block;
+}
+
+.site-loader-rahul-glitch span::before,
+.site-loader-rahul-glitch span::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.site-loader-rahul-glitch span::before {
+  color: rgb(var(--brand-blue-bright));
+  transform: translate(-2px, 0);
+  mix-blend-mode: screen;
+  animation: site-loader-rahul-glitch-x 1.6s steps(2) infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  text-shadow: 0 0 10px rgba(26, 127, 237, 0.6);
+}
+
+.site-loader-rahul-glitch span::after {
+  color: rgb(var(--brand-silver));
+  transform: translate(2px, 0);
+  mix-blend-mode: screen;
+  animation: site-loader-rahul-glitch-x 1.4s steps(2) reverse infinite;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  text-shadow: 0 0 10px rgba(184, 197, 212, 0.55);
+}
+
+@keyframes site-loader-rahul-glitch-x {
+  0%,
+  100% {
+    transform: translate(-2px, 0);
+  }
+  20% {
+    transform: translate(3px, -1px);
+  }
+  40% {
+    transform: translate(-3px, 1px);
+  }
+  60% {
+    transform: translate(2px, 0);
+  }
+  80% {
+    transform: translate(-1px, 2px);
+  }
 }
 
 /* Magnetic CTA */

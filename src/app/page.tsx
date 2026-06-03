@@ -1,6 +1,7 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { InfiniteTestimonialBand } from "@/components/InfiniteTestimonialBand";
+import { Logo3DBackdropMount } from "@/components/Logo3DBackdropMount";
 import { MarqueeStrip } from "@/components/MarqueeStrip";
 import { PortoBackdrop } from "@/components/PortoBackdrop";
 import { About } from "@/components/sections/About";
@@ -20,6 +21,7 @@ export default function Home() {
   return (
     <div className="relative min-h-svh overflow-x-clip bg-black text-foreground">
       <PortoBackdrop />
+      <Logo3DBackdropMount />
       <div className="relative z-10">
         <Header />
         <main className="min-h-0">

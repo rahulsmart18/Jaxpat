@@ -21,10 +21,20 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /** Shorter timeline = snappier first paint; counter still eases out smoothly */
 const COUNTER_MS = 1750;
-const CURTAIN_MS = 720;
+const CURTAIN_MS = 900;
 const EXIT_DELAY_MS = 120;
-const EXIT_MS = 820;
-const DONE_DELAY_MS = 420;
+const EXIT_MS = 720;
+const DONE_DELAY_MS = 320;
+
+const MATRIX_CHARS =
+  "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲ0123456789ABCDEF<>/[]{}|=*+#$%&";
+
+const GLITCH_WORD = "JAXPAT";
+const randomizeCase = (word: string) =>
+  word
+    .split("")
+    .map((c) => (Math.random() < 0.5 ? c.toUpperCase() : c.toLowerCase()))
+    .join("");
 
 type LoaderPhase = "pending" | "counting" | "curtain" | "exit" | "done";
 
@@ -37,9 +47,12 @@ export function SiteLoader() {
   /** After `dispatchLoaderComplete`, the header becomes interactive while this node may still exist for `DONE_DELAY_MS` — keep it from eating the first click. */
   const [releasePointer, setReleasePointer] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [glitchText, setGlitchText] = useState(GLITCH_WORD);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const curtainRef = useRef<HTMLDivElement>(null);
+  const matrixCanvasRef = useRef<HTMLCanvasElement>(null);
+  const glitchRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const assetRatioRef = useRef(0);
   const rafRef = useRef(0);
@@ -131,44 +144,163 @@ export function SiteLoader() {
   }, [phase]);
 
   useEffect(() => {
+    if (phase !== "curtain" && phase !== "exit") return;
+    const canvas = matrixCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const fontSize = 16;
+    let width = 0;
+    let height = 0;
+    let columns = 0;
+    let drops: number[] = [];
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      columns = Math.ceil(width / fontSize);
+      drops = new Array(columns)
+        .fill(0)
+        .map(() => Math.floor(Math.random() * -40));
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, width, height);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    let raf = 0;
+    const draw = () => {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
+      ctx.fillRect(0, 0, width, height);
+      ctx.font = `${fontSize}px "JetBrains Mono", ui-monospace, monospace`;
+      for (let i = 0; i < columns; i++) {
+        const ch = MATRIX_CHARS.charAt(
+          Math.floor(Math.random() * MATRIX_CHARS.length),
+        );
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        const isHead = Math.random() < 0.015;
+        ctx.fillStyle = isHead ? "#e8eef5" : "#1a7fed";
+        if (isHead) ctx.shadowColor = "#1a7fed";
+        ctx.shadowBlur = isHead ? 14 : 0;
+        ctx.fillText(ch, x, y);
+        ctx.shadowBlur = 0;
+        if (y > height && Math.random() > 0.972) {
+          drops[i] = 0;
+        } else {
+          drops[i] += 1;
+        }
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    raf = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, [phase]);
+
+  useEffect(() => {
     if (phase !== "curtain" || !curtainRef.current) return;
 
-    gsap.fromTo(
+    const tl = gsap.timeline({ onComplete: () => setPhase("exit") });
+    tl.fromTo(
       curtainRef.current,
-      { scaleY: 0 },
+      { opacity: 0 },
       {
-        scaleY: 1,
+        opacity: 1,
         duration: CURTAIN_MS / 1000,
-        ease: "power3.inOut",
-        transformOrigin: "bottom center",
-        onComplete: () => setPhase("exit"),
+        ease: "power2.out",
       },
     );
+
+    const center = rootRef.current?.querySelector(
+      ".site-loader-rahul-center",
+    ) as HTMLElement | null;
+    if (center) {
+      tl.to(
+        center,
+        {
+          opacity: 0,
+          filter: "blur(4px)",
+          duration: 0.35,
+          ease: "power2.in",
+        },
+        0,
+      );
+    }
+
+    if (glitchRef.current) {
+      gsap.to(glitchRef.current, {
+        opacity: 1,
+        duration: 0.18,
+        delay: 0.1,
+      });
+    }
+
+    setGlitchText(randomizeCase(GLITCH_WORD));
+    const scrambleId = window.setInterval(() => {
+      setGlitchText(randomizeCase(GLITCH_WORD));
+    }, 70);
+
+    return () => {
+      window.clearInterval(scrambleId);
+    };
   }, [phase]);
 
   useEffect(() => {
     if (phase !== "exit") return;
 
     const el = rootRef.current;
-    if (!el) {
+    const complete = () => {
       markLoaderComplete();
       dispatchLoaderComplete();
       setReleasePointer(true);
       window.setTimeout(() => setPhase("done"), DONE_DELAY_MS);
+    };
+
+    if (!el) {
+      complete();
       return;
     }
 
-    gsap.to(el, {
-      yPercent: -100,
-      duration: EXIT_MS / 1000,
-      ease: "power4.inOut",
-      onComplete: () => {
-        markLoaderComplete();
-        dispatchLoaderComplete();
-        setReleasePointer(true);
-        window.setTimeout(() => setPhase("done"), DONE_DELAY_MS);
-      },
-    });
+    const tl = gsap.timeline({ onComplete: complete });
+    tl.to(el, {
+      keyframes: [
+        { x: -8, skewX: 2, duration: 0.05 },
+        { x: 10, skewX: -3, duration: 0.05 },
+        { x: -6, skewX: 1.5, duration: 0.05 },
+        { x: 4, skewX: -1, duration: 0.05 },
+        { x: 0, skewX: 0, duration: 0.05 },
+      ],
+      ease: "steps(1)",
+    })
+      .to(
+        el,
+        {
+          opacity: 0,
+          duration: EXIT_MS / 1000,
+          ease: "power2.in",
+        },
+        0.05,
+      )
+      .to(
+        el,
+        {
+          scale: 1.04,
+          duration: EXIT_MS / 1000,
+          ease: "power3.in",
+        },
+        0.05,
+      );
   }, [phase]);
 
   if (!mounted || phase === "pending" || phase === "done") return null;
@@ -230,10 +362,25 @@ export function SiteLoader() {
 
       <div
         ref={curtainRef}
-        className="site-loader-rahul-curtain pointer-events-none absolute inset-0 z-20 bg-white"
+        className="site-loader-rahul-curtain pointer-events-none absolute inset-0 z-20"
         aria-hidden
-        style={{ transform: "scaleY(0)", transformOrigin: "bottom center" }}
-      />
+        style={{ opacity: 0 }}
+      >
+        <canvas
+          ref={matrixCanvasRef}
+          className="site-loader-rahul-matrix-canvas"
+          aria-hidden
+        />
+        <div className="site-loader-rahul-scanlines" aria-hidden />
+        <div
+          ref={glitchRef}
+          className="site-loader-rahul-glitch"
+          aria-hidden
+          style={{ opacity: 0 }}
+        >
+          <span data-text={glitchText}>{glitchText}</span>
+        </div>
+      </div>
     </div>
   );
 }

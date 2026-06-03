@@ -132,13 +132,12 @@ export function Hero() {
               </span>
             )}
           </motion.span>
-          <motion.p
+          <motion.span
             initial={heroHidden}
             animate={loaderDone ? heroVisible : heroHidden}
             transition={{ duration: 0.85, ease: portoEase, delay: 0.28 }}
-            className={`mx-auto mt-8 w-full max-w-xl px-1 text-center ${heroTaglineClass}`}
+            className={`mx-auto mt-8 flex w-full max-w-xl justify-center px-1 text-center ${heroTaglineClass}`}
           >
-            <div className="flex w-full justify-center">
             {loaderDone ? (
               <HoverWords
                 as="span"
@@ -151,8 +150,7 @@ export function Hero() {
                 AI · Full-stack · Mobile · Embedded · VR / AR
               </span>
             )}
-            </div>
-          </motion.p>
+          </motion.span>
         </h1>
         </ParallaxLayer>
 
