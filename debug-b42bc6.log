@@ -1,0 +1,12 @@
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H4","location":"dev.mjs:child-exit","message":"Next CLI process exited (ignored)","data":{"code":0,"signal":null},"timestamp":1780554108198}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H4","location":"dev.mjs:child-exit","message":"Next CLI process exited (ignored)","data":{"code":0,"signal":null},"timestamp":1780554108465}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H4","location":"dev.mjs:child-exit","message":"Next CLI process exited (ignored)","data":{"code":0,"signal":null},"timestamp":1780554108843}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H3","location":"dev.mjs:trace","message":"Trace cleanup before dev","data":{"removed":false},"timestamp":1780554118795}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H4","location":"dev.mjs:lock-acquired","message":"Exclusive dev lock acquired","data":{"wrapperPid":25492},"timestamp":1780554118860}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H4","location":"dev.mjs:start","message":"Started next dev child","data":{"pid":26224},"timestamp":1780554118874}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H3","location":"dev.mjs:trace","message":"Trace cleanup before dev","data":{"removed":false},"timestamp":1780554125252}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H1","location":"dev.mjs:lock-exists","message":"Dev lock already present","data":{"port3000Up":false,"lockMeta":{"wrapperPid":25492,"startedAt":1780554118849},"lockAgeMs":9508,"lockFresh":true},"timestamp":1780554128357}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H2","location":"dev.mjs:block","message":"Blocked second dev instance","data":{"port3000Up":false,"lockFresh":true,"lockMeta":{"wrapperPid":25492,"startedAt":1780554118849}},"timestamp":1780554128360}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H3","location":"dev.mjs:trace","message":"Trace cleanup before dev","data":{"removed":false},"timestamp":1780555397291}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H1","location":"dev.mjs:lock-exists","message":"Dev lock already present","data":{"port3000Up":true,"lockMeta":{"wrapperPid":25492,"startedAt":1780554118849},"lockAgeMs":1279599,"lockFresh":false},"timestamp":1780555398449}
+{"sessionId":"b42bc6","runId":"pre-dev","hypothesisId":"H2","location":"dev.mjs:block","message":"Blocked second dev instance","data":{"port3000Up":true,"lockFresh":false,"lockMeta":{"wrapperPid":25492,"startedAt":1780554118849}},"timestamp":1780555398451}

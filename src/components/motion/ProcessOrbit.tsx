@@ -1,12 +1,7 @@
 "use client";
 
 import { portoEase } from "@/lib/motion";
-import {
-  motion,
-  useReducedMotion,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const STEPS = ["BRIEF", "UI", "API", "DATA", "AI", "SHIP"] as const;
 
@@ -23,20 +18,17 @@ const HEX_PATH =
   "M 200 48 L 318 116 L 318 244 L 200 312 L 82 244 L 82 116 Z";
 
 type ProcessOrbitProps = {
-  progress: MotionValue<number>;
   activeIndex: number;
 };
 
-export function ProcessOrbit({ progress, activeIndex }: ProcessOrbitProps) {
+export function ProcessOrbit({ activeIndex }: ProcessOrbitProps) {
   const reduceMotion = useReducedMotion();
-
-  const pathLength = useTransform(progress, [0, 1], [0, 1]);
-  const ringRotate = useTransform(progress, [0, 1], [0, 42]);
-  const centerGlow = useTransform(progress, [0, 1], [0.12, 0.3]);
 
   const safeIndex = Math.max(0, Math.min(STEPS.length - 1, activeIndex));
   const activeLabel = NODES[safeIndex].label;
   const activeStep = STEPS[safeIndex];
+  const pathProgress = (safeIndex + 1) / STEPS.length;
+  const ringRotate = safeIndex * 8.4;
 
   return (
     <motion.div
@@ -48,14 +40,28 @@ export function ProcessOrbit({ progress, activeIndex }: ProcessOrbitProps) {
     >
       <motion.div
         className="pointer-events-none absolute inset-[8%] rounded-full bg-[radial-gradient(circle,rgba(0,86,179,0.12),transparent_68%)]"
-        style={{ rotate: ringRotate, opacity: centerGlow }}
+        animate={{
+          rotate: ringRotate,
+          opacity: 0.12 + pathProgress * 0.18,
+        }}
+        transition={{ duration: 0.45, ease: portoEase }}
         aria-hidden
       />
       <motion.div
         className="pointer-events-none absolute inset-[14%] rounded-full border border-white/10"
-        style={{ rotate: ringRotate }}
-        animate={reduceMotion ? undefined : { scale: [1, 1.05, 1] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+        animate={
+          reduceMotion
+            ? { rotate: ringRotate }
+            : { rotate: ringRotate, scale: [1, 1.05, 1] }
+        }
+        transition={
+          reduceMotion
+            ? { duration: 0.45, ease: portoEase }
+            : {
+                rotate: { duration: 0.45, ease: portoEase },
+                scale: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+              }
+        }
         aria-hidden
       />
 
@@ -76,8 +82,9 @@ export function ProcessOrbit({ progress, activeIndex }: ProcessOrbitProps) {
           stroke="rgba(26,127,237,0.75)"
           strokeWidth={1.5}
           strokeLinecap="round"
+          animate={{ pathLength: reduceMotion ? 1 : pathProgress }}
+          transition={{ duration: 0.45, ease: portoEase }}
           style={{
-            pathLength: reduceMotion ? 1 : pathLength,
             filter: "drop-shadow(0 0 12px rgba(0,86,179,0.35))",
           }}
         />
